@@ -1,5 +1,4 @@
 from mastodon import Mastodon
-from time import time, sleep
 
 
 mastodon = Mastodon(
@@ -7,11 +6,21 @@ mastodon = Mastodon(
   api_base_url = 'https://tavern.antinet.work'
 )
 
-#verify own credentials to get user id
-
-botself = mastodon.me()
-
-botself_id = botself["id"]
-
-def fetch():
-    Mastodon.notifications(id = None account_id = botself_id)
+def fetch_notifications():
+	botself = mastodon.me()
+	botself_id = botself["id"]
+	print (botself_id)
+	statuses = mastodon.notifications(limit=1)
+	status_dict = statuses[0]
+	status_type = status_dict['type']
+	status_user = status_dict['account']
+	user_id = status_user['id']
+	user_name = status_user['username']
+	if status_type == 'mention':
+		mastodon.status_post('Hey there, thanks for reaching out, '+user_name)
+	elif status_type != 'mention':
+		print ('No Mention')	
+		 		
+	
+    
+fetch_notifications()
